@@ -42,6 +42,7 @@ import requests
 import traceback
 from socket import error as socket_error
 from subprocess import check_output  # TODO: Switch completely to this or a similar library instead of os.system()
+import commands
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 
 # Non-Standard Libraries
@@ -349,8 +350,9 @@ def minify_and_encode_js(javascript_input):
 # If multiple IP addresses are found, the user can then choose which to use.
 def get_local_ip():
     try:
-        local_ip = check_output(['hostname', '-i']).strip()
-        if len(local_ip.split(' ')) > 1:
+        local_ip = commands.getoutput("ip addr | grep -o \"inet [1-9./]* \" | tr -d 'inet '")
+        local_ips = local_ip.split("\n")
+        if len(local_ips) > 1:
             print FontColors.BLUE + FontColors.BOLD
             print "   ╭───────────────────────╮╭───────────╮╭──╮╭──╮"
             print "   │  FROM XSS TO RCE 2.75 ││  IP Addr  ││  ││  │"
@@ -359,7 +361,7 @@ def get_local_ip():
             print FontColors.BOLD + "   Choose which IP address to use:" + FontColors.ENDC
             print " ╔════════════════════════════════════════════════╗"
             counter = 1
-            for ip in local_ip.split(' '):
+            for ip in local_ips:
                 print " ║ [{}] {:25}                  ║".format(counter, ip)
                 counter += 1
             print " ╚════════════════════════════════════════════════╝"
@@ -370,12 +372,12 @@ def get_local_ip():
             elif not ip_choice.isdigit():
                 print FontColors.YELLOW + " [!] Your choice must be an integer. Quitting.." + FontColors.ENDC
                 exit_xsser(1)
-            elif int(ip_choice) > len(local_ip.split(' ')) or int(ip_choice) == 0:
+            elif int(ip_choice) > len(local_ips) or int(ip_choice) == 0:
                 print FontColors.YELLOW + " [!] Option not recognized. Quitting.." + FontColors.ENDC
                 exit_xsser(1)
             else:
                 ip_choice = int(ip_choice) - 1
-            return local_ip.split(' ')[ip_choice]
+            return local_ips[ip_choice]
         else:
             return local_ip
     except KeyboardInterrupt:
