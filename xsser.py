@@ -349,7 +349,7 @@ def minify_and_encode_js(javascript_input):
 # If multiple IP addresses are found, the user can then choose which to use.
 def get_local_ip():
     try:
-        local_ip = check_output(['hostname', '--all-ip-addresses']).strip()
+        local_ip = check_output(['hostname', '-i']).strip()
         if len(local_ip.split(' ')) > 1:
             print FontColors.BLUE + FontColors.BOLD
             print "   ╭───────────────────────╮╭───────────╮╭──╮╭──╮"
