@@ -362,7 +362,7 @@ def get_local_ip():
             print " ╔════════════════════════════════════════════════╗"
             counter = 1
             for ip in local_ips:
-                print " ║ [{}] {:25}                  ║".format(counter, ip)
+                print " ║ [{}] {:25}                  ║".format(counter, str(ip).split("/")[0])
                 counter += 1
             print " ╚════════════════════════════════════════════════╝"
             print FontColors.RED + "\n q. Quit\n" + FontColors.ENDC
@@ -377,9 +377,9 @@ def get_local_ip():
                 exit_xsser(1)
             else:
                 ip_choice = int(ip_choice) - 1
-            return local_ips[ip_choice]
+            return str(local_ips[ip_choice]).split("/")[0]
         else:
-            return local_ip
+            return str(local_ip).split("/")[0]
     except KeyboardInterrupt:
         print FontColors.YELLOW + "\n [!] CTRL+C detected, shutting down." + FontColors.ENDC
         exit_xsser(1)
